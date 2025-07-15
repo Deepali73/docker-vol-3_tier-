@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Docker</title>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #e0f7fa;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      text-align: center;
+      padding: 60px 20px;
+      color: white;
+      box-shadow: 0 5px 15px rgba(0, 213, 255, 0.3);
+    }
+
+    header h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .section {
+      padding: 50px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .toggle {
+      background: #161b22;
+      border: 2px solid #00d1b2;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #00d1b2;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      text-align: center;
+    }
+
+    .toggle:hover {
+      background: #1e2a36;
+      transform: scale(1.02);
+    }
+
+    .content {
+      display: none;
+      background: #0f172a;
+      padding: 40px;
+      border-radius: 16px;
+      margin-top: 20px;
+      border: 1px solid #00bfa5;
+      box-shadow: 0 0 20px rgba(0, 191, 165, 0.2);
+    }
+
+    h2 {
+      color: #4dd0e1;
+      font-size: 1.8em;
+    }
+
+    h3 {
+      color: #81d4fa;
+      margin-top: 30px;
+    }
+
+    p, ul {
+      font-size: 1.1em;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+    }
+
+    code {
+      background-color: #263238;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #80cbc4;
+      font-family: monospace;
+    }
+
+    pre {
+      background: #1c1c1c;
+      color: #00e676;
+      padding: 16px;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 1em;
+      white-space: pre-wrap;
+      border: 1px solid #00c853;
+      box-shadow: inset 0 0 6px #00c853;
+      margin: 25px 0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    pre:hover {
+      background-color: #222;
+      box-shadow: 0 0 15px #00e676;
+    }
+
+    .diagram-box {
+      background: #101820;
+      padding: 20px;
+      border-left: 4px solid #00e5ff;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      color: #b2ff59;
+      margin: 30px 0;
+      box-shadow: 0 0 10px #00e5ff66;
+    }
+
+    .highlight-box {
+      background: #003c3c;
+      border-left: 5px solid #00d1b2;
+      padding: 20px;
+      margin: 25px 0;
+      border-radius: 8px;
+      font-size: 1.1em;
+      color: #a7ffeb;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #00d1b2;
+      color: #000;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+   <header>
+    <h1>DockerTierCraft – Crafting multi-layered architectures with volumes, MySQL & WordPress</h1>
+    <p>Understand how persistent data and real-world deployments work — <strong>visually</strong> and <strong>practically</strong>.</p>
+  </header>
+
+  <div class="section">
+    <div class="toggle" onclick="toggleSection('volumes')"> Click to Explore Docker Volumes</div>
+    <div class="content" id="volumes">
+      <h2>Why Persistence Matters in Containers</h2>
+      <div class="highlight-box">
+        Containers are ephemeral. Without volumes, you lose data on deletion.
+      </div>
+
+      <ul>
+        <li><strong>Docker Volumes</strong> <span class="badge">Best for Production</span> — Managed directly by Docker.</li>
+        <li><strong>Bind Mounts</strong> <span class="badge">Great for Dev</span> — Connect host folder directly to the container.</li>
+      </ul>
+
+      <h2>Using Docker Volumes</h2>
+      <h3>Technique A: Attach to a Container</h3>
+      <pre><code>docker volume create myvol
+docker run -it --name=os1 -v myvol:/home ubuntu</code></pre>
+
+      <p>Inside container:</p>
+      <pre><code>cd /home
+touch data.txt
+echo "Hello" >> data.txt</code></pre>
+      <p><strong>Even after deleting <code>os1</code>, your data is safe inside <code>myvol</code>.</strong></p>
+
+      <h3>Technique B: Share Between Containers</h3>
+      <pre><code>docker run -it --name=os2 -v myvol:/home ubuntu</code></pre>
+      <p>You’ll see the same <code>data.txt</code> in <code>/home</code>.</p>
+
+      <h2> Bind Mount Example</h2>
+      <pre><code>mkdir ~/container-data
+pwd
+
+docker run -it --name=os3 -v /path:/home ubuntu</code></pre>
+      <p>This links your Linux folder directly with the container.</p>
+
+      <h3> Quick Tips:</h3>
+      <ul>
+        <li><code>docker volume ls</code> – View all volumes</li>
+        <li><code>docker volume inspect volname</code> – Details & paths</li>
+        <li><code>hostname</code> – Identify container from inside</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="toggle" onclick="toggleSection('threeTier')"> Click to Explore 3-Tier Architecture with Docker</div>
+    <div class="content" id="threeTier">
+      <h2> What is 3-Tier Architecture?</h2>
+      <p>Split your app into independent layers:</p>
+      <ul>
+        <li><strong>Database Layer</strong> – MySQL</li>
+        <li><strong>Application Layer</strong> – WordPress</li>
+        <li><strong>Client Layer</strong> – Web browser</li>
+      </ul>
+
+      <h3>Step 1: Start the MySQL Database</h3>
+      <pre><code>docker volume create mysql-data
+
+docker run -dit --name=mydb \
+  -e MYSQL_ROOT_PASSWORD=redhat \
+  -e MYSQL_DATABASE=mydb \
+  -e MYSQL_USER=deepali \
+  -e MYSQL_PASSWORD=redhat \
+  -v mysql-data:/var/lib/mysql \
+  mysql</code></pre>
+
+      <h3>Step 2: Start the WordPress Frontend</h3>
+      <pre><code>docker volume create wp
+
+docker run -dit --name=wp \
+  -v wp:/var/www/html \
+  -p 8080:80 \
+  wordpress</code></pre>
+
+      <h3>Step 3: Connect via Browser</h3>
+      <p>Go to: <code>http://&lt;your-IP&gt;:8080</code> to complete setup using the DB credentials from Step 1.</p>
+
+      <h3>Step 4: Get MySQL Container IP</h3>
+      <pre><code>docker inspect mydb</code></pre>
+      <p>Use the internal <code>IPAddress</code> for WordPress DB config.</p>
+
+      <div class="diagram-box">
++---------------------+       +-----------------------+
+|  Volume: mysql-data | ----> |   MySQL Container     |
++---------------------+       +-----------------------+
+                                      |
+                                      |   (Docker Network / Internal IP)
+                                      v
++------------------+        +----------------------+  
+| Volume: wp       | -----> |  WordPress Container |  
++------------------+        +----------------------+  
+                                      |
+                                      v
+                              Accessible via Browser (Port 8080)
+      </div>
+
+      <h3> Final Flow Summary:</h3>
+      <ul>
+        <li><code>mysql-data</code> → MySQL container (Data Layer)</li>
+        <li><code>wp</code> → WordPress container (App Layer)</li>
+        <li>Browser → Connects via port 8080 (Client Layer)</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function toggleSection(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+  </script>
+</body>
+</html>
